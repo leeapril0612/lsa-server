@@ -17,14 +17,14 @@ export class UserService {
     const salt: string = await Bcrypt.genSalt(10);
     const password: string = await Bcrypt.hash(register.password, salt);
 
-    registerUser.email = register.email;
+    registerUser.username = register.username;
     registerUser.name = register.name;
     registerUser.uuid = Token.getUUID();
     registerUser.password = password;
 
     const user = await this.userRepository.save(registerUser);
     const userInfo: UserInfo = {
-      email: user.email,
+      username: user.username,
       name: user.name,
       uuid: user.uuid,
     };
@@ -34,7 +34,7 @@ export class UserService {
   public async login(loginUser: Login): Promise<LoginUserInfo> {
     const user: User = await this.userRepository.findOne({
       where: {
-        email: loginUser.email,
+        username: loginUser.username,
       },
     });
 
@@ -52,11 +52,12 @@ export class UserService {
     await this.userRepository.save(user);
 
     const userInfo: LoginUserInfo = {
-      email: user.email,
+      username: user.username,
       name: user.name,
       uuid: user.uuid,
       lastLogin: user.lastLoginDate,
     };
+  
     return userInfo;
   }
 }
