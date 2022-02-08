@@ -5,6 +5,7 @@ import { Token } from 'src/util/token.util';
 import { UserRepository } from './user.repository';
 import * as Bcrypt from 'bcryptjs';
 import { Login, LoginUserInfo, Register, UserInfo } from './user.type';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UserService {
