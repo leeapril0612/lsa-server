@@ -39,6 +39,9 @@ export class UserService {
       },
     });
 
+    if(!user) {
+      return null;
+    }
     const passwordCheck = await Bcrypt.compare(
       loginUser.password,
       user.password,

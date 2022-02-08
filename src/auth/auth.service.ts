@@ -10,15 +10,15 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) { }
 
-    async validateUser(username: string, password: string): Promise<boolean> {
+    async validateUser(username: string, password: string): Promise<LoginUserInfo> {
         const user = await this.userService.login({
             username,
             password,
         });
         if (user) {
-            return true;
+            return user;
         }
-        return false;
+        return null;
     }
 
     async generateToken(user: LoginUserInfo) {

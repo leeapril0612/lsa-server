@@ -1,12 +1,12 @@
-import { Body, Controller, Header, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ValidationError } from 'Joi';
 import { AuthService } from 'src/auth/auth.service';
 
 import { Response, ResponseMessage } from '../util/response.util';
-import { loginSchema, registerSchema } from './user.schema';
+import { registerSchema } from './user.schema';
 import { UserService } from './user.service';
-import { Login, Register, UserInfo } from './user.type';
+import { Register, UserInfo } from './user.type';
 
 @Controller('user')
 export class UserController {
@@ -15,6 +15,7 @@ export class UserController {
     private readonly authService: AuthService,
   ) { }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('register')
   public async addUser(@Body() register: Register): Promise<Response> {
     try {
@@ -36,24 +37,11 @@ export class UserController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  public async login(@Body() login: Login): Promise<Response> {
-    console.log(login);
-    // const { value, error }: { value: Login; error?: ValidationError } = loginSchema.validate(login);
-
-    // if (error) {
-    //   Logger.error(error);
-    //   return new ResponseMessage().error(999).body('Parameter Error').build();
-    // }
-
-    const user = await this.userService.login(login);
-
-    if (!user) {
-      return new ResponseMessage().error(999, 'Login Error').build();
-    }
-    const token = await this.authService.generateToken(user);
-
+  public async login(@Res({ passthrough: true }) response, @Request() req): Promise<Response> {
+    const access_token = await (await this.authService.generateToken(req.user)).access_token;
+    await response.cookie('Authorization', access_token);
     return new ResponseMessage().success().body({
-      token : token.access_token
+      token: access_token
     }).build();
   }
 }
