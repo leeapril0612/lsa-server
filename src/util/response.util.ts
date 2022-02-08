@@ -3,7 +3,7 @@ export class ResponseMessage {
   private code: number; //  response code
 
   public success(): ResponseMessage {
-    this.code = 1;
+    this.code = 200;
     return this;
   }
 
