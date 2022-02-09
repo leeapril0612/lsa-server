@@ -14,7 +14,7 @@ export class Board {
   id: number;
 
   @Column()
-  username: number;
+  username: string;
 
   @Column({ length: 100 })
   title: string;
