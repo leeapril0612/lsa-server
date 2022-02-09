@@ -1,4 +1,4 @@
-import { Body, Controller, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ValidationError } from 'Joi';
 import { AuthService } from 'src/auth/auth.service';
@@ -43,5 +43,13 @@ export class UserController {
     return new ResponseMessage().success().body({
       token: access_token
     }).build();
+  }
+
+
+  
+  @Get('users')
+  public async getUsers(@Res({ passthrough: true }) response, @Request() req): Promise<Response> {
+    const users = await this.userService.getUsers()
+    return new ResponseMessage().success().body(users).build();
   }
 }

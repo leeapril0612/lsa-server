@@ -9,7 +9,15 @@ import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) { }
+
+
+  public async getUsers() {
+    const users = await this.userRepository.find({
+      select: ['username', 'name', 'lastLoginDate', 'createdDate', 'lastLoginDate']
+    });
+    return users;
+  }
 
   public async addUser(register: Register): Promise<UserInfo> {
     const registerUser = await this.userRepository.create();
@@ -39,7 +47,7 @@ export class UserService {
       },
     });
 
-    if(!user) {
+    if (!user) {
       return null;
     }
     const passwordCheck = await Bcrypt.compare(
@@ -61,7 +69,7 @@ export class UserService {
       uuid: user.uuid,
       lastLogin: user.lastLoginDate,
     };
-  
+
     return userInfo;
   }
 }
