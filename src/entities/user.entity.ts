@@ -6,22 +6,22 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user', schema: 'board' })
+@Entity({ name: 'user'})
 export class User {
-  @PrimaryGeneratedColumn({
-    name: 'user_id',
-  })
-  id: number;
+  // @PrimaryGeneratedColumn({
+  //   name: 'user_id',
+  // })
+  // id: number;
 
-  @Column({ length: 40 })
-  uuid: string;
+  @Column({ 
+    length: 100,
+    primary:true 
+  })
+  username: string;
 
   @Column({ length: 20 })
   name: string;
-
-  @Column({ length: 100 })
-  username: string;
-
+  
   @Column({ length: 100 })
   password: string;
 
