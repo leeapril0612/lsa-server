@@ -9,7 +9,13 @@ import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) { }
+  constructor(private readonly userRepository: UserRepository) { 
+    this.addUser({
+      username:'admin',
+      name:'admin',
+      password: '1234'
+    })
+  }
 
 
   public async getUsers() {
