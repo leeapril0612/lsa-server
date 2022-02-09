@@ -1,7 +1,6 @@
 import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 const fromAuthCookie = function () {
     return function (request) {
@@ -15,9 +14,7 @@ const fromAuthCookie = function () {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(
-        // private readonly config: ConfigService
-    ) {
+    constructor() {
         super({
             jwtFromRequest: fromAuthCookie(),
             ignoreExpiration: false,
@@ -26,7 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        console.log('vali')
         return { userId: payload.sub, username: payload.username };
     }
 }
