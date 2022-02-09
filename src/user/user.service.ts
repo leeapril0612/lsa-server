@@ -28,14 +28,12 @@ export class UserService {
 
     registerUser.username = register.username;
     registerUser.name = register.name;
-    registerUser.uuid = Token.getUUID();
     registerUser.password = password;
 
     const user = await this.userRepository.save(registerUser);
     const userInfo: UserInfo = {
       username: user.username,
       name: user.name,
-      uuid: user.uuid,
     };
     return userInfo;
   }
@@ -66,7 +64,6 @@ export class UserService {
     const userInfo: LoginUserInfo = {
       username: user.username,
       name: user.name,
-      uuid: user.uuid,
       lastLogin: user.lastLoginDate,
     };
 
