@@ -46,8 +46,8 @@ export class UserController {
   }
 
 
-  
-  @Get('users')
+  @UseGuards(AuthGuard('jwt'))
+  @Get('list')
   public async getUsers(@Res({ passthrough: true }) response, @Request() req): Promise<Response> {
     const users = await this.userService.getUsers()
     return new ResponseMessage().success().body(users).build();
