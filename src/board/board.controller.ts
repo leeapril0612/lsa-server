@@ -1,25 +1,71 @@
-import { Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Header, Logger, Param, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ReqeustCreateBoard } from './board.type';
+import { createBoardSchema } from './board.schema';
+import { ValidationError } from 'joi';
+import { ResponseMessage } from 'src/util/response.util';
+import { BoardService } from './board.service';
 
 @Controller('board')
 export class BoardController {
 
+    constructor(private readonly boardService: BoardService) { }
+
+    @UseGuards(AuthGuard('jwt'))
     @Get('/list')
-    public async getBoards(){
-        return 'getBoards';
+    public async getBoards() {
+        try {
+            const boards = await this.boardService.getBoards();
+
+            return new ResponseMessage().success(200).body(boards)
+
+        } catch (err) {
+            Logger.error(err);
+        }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
-    public async getBoard(){
-        return 'getBoard';
+    public async getBoard(@Param('id') id: number) {
+        try {
+            const board = await this.boardService.getBoard(id);
+
+            if (!board) {
+                return new ResponseMessage().error(403).build();
+            }
+            return new ResponseMessage().success(200).body(board).build()
+
+        } catch (err) {
+            Logger.error(err);
+        }
     }
 
+    // @UseGuards(AuthGuard('jwt'))
+    @Header('Content-Type', 'application/json')
     @Post()
-    public async createBoard(){
-        return 'create-board';
+    public async createBoard(@Request() req, @Body() data: ReqeustCreateBoard) {
+        try {
+
+            const { value, error }: { value: ReqeustCreateBoard; error?: ValidationError } = createBoardSchema.validate(data);
+            if (error) {
+                Logger.error(error);
+                return new ResponseMessage().error(999).body('Parameter Error').build();
+            }
+            const board = await this.boardService.createBoard({
+                ...data,
+                // username: req.user.username,
+                username: 'admin'
+            });
+            return new ResponseMessage().success(201).body(board).build();
+        } catch (error) {
+            Logger.error(error)
+        }
     }
 
-    @Put('/:id')
-    public async updateBoards(){
+
+    @Header('Content-Type', 'application/json')
+    @Patch('/:id')
+    public async updateBoards() {
         return 'update-boards';
     }
 }
