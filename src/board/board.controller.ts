@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Header, Logger, Param, Patch, Post,  Request, Response, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Logger, Param, Patch, Post, Request, Response, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ReqeustCreateBoard, UpdateBoard } from './board.type';
 import { createBoardSchema } from './board.schema';
 import { ValidationError } from 'joi';
-import { ResponseMessage } from 'src/util/response.util';
+import { ResponseMessage, ResponseMessageBody } from 'src/util/response.util';
 import { BoardService } from './board.service';
 
 @Controller('board')
@@ -13,11 +13,11 @@ export class BoardController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/list')
-    public async getBoards() {
+    public async getBoards(): Promise<ResponseMessageBody> {
         try {
             const boards = await this.boardService.getBoards();
 
-            return new ResponseMessage().success(200).body(boards)
+            return new ResponseMessage().success(200).body(boards).build();
 
         } catch (err) {
             Logger.error(err);
@@ -26,7 +26,7 @@ export class BoardController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
-    public async getBoard(@Param('id') id: number) {
+    public async getBoard(@Param('id') id: number): Promise<ResponseMessageBody> {
         try {
             const board = await this.boardService.getBoard(id);
 
@@ -43,7 +43,7 @@ export class BoardController {
     @UseGuards(AuthGuard('jwt'))
     @Header('Content-Type', 'application/json')
     @Post()
-    public async createBoard(@Request() req, @Body() data: ReqeustCreateBoard) {
+    public async createBoard(@Request() req, @Body() data: ReqeustCreateBoard): Promise<ResponseMessageBody> {
         try {
             const { error }: { value: ReqeustCreateBoard; error?: ValidationError } = createBoardSchema.validate(data);
             if (error) {
@@ -64,7 +64,7 @@ export class BoardController {
     @UseGuards(AuthGuard('jwt'))
     @Header('Content-Type', 'application/json')
     @Patch('/:id')
-    public async updateBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard) {
+    public async updateBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard): Promise<ResponseMessageBody> {
         try {
             const board = await this.boardService.updateBoard(id, req.user.username, body);
 
@@ -78,11 +78,11 @@ export class BoardController {
         }
     }
 
-    
+
     @UseGuards(AuthGuard('jwt'))
     @Header('Content-Type', 'application/json')
     @Delete('/:id')
-    public async deleteBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard) {
+    public async deleteBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard): Promise<ResponseMessageBody> {
         try {
             const board = await this.boardService.deleteBoard(id, req.user.username);
 

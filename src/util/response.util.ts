@@ -26,15 +26,15 @@ export class ResponseMessage {
     return this.code;
   }
 
-  public build(): Response {
-    return new Response(this);
+  public build(): ResponseMessageBody {
+    return new ResponseMessageBody(this);
   }
 }
 
 /**
  * Normal Response Message
  */
-export class Response {
+export class ResponseMessageBody {
   data: any | any[];
   code: number;
 

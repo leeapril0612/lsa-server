@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Header, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
 import { ValidationError } from 'Joi';
 import { AuthService } from 'src/auth/auth.service';
 
-import { Response, ResponseMessage } from '../util/response.util';
+import { ResponseMessage, ResponseMessageBody } from '../util/response.util';
 import { registerSchema } from './user.schema';
 import { UserService } from './user.service';
 import { Register, UserInfo } from './user.type';
@@ -18,7 +19,7 @@ export class UserController {
   @Header('Content-Type', 'application/json')
   @UseGuards(AuthGuard('jwt'))
   @Post('register')
-  public async addUser(@Body() register: Register): Promise<Response> {
+  public async addUser(@Body() register: Register): Promise<ResponseMessageBody> {
     try {
       const { value, error }: { value: Register; error?: ValidationError } = registerSchema.validate(register);
 
@@ -37,10 +38,11 @@ export class UserController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  public async login(@Res({ passthrough: true }) response, @Request() req): Promise<Response> {
+  public async login(@Res({ passthrough: true }) response: Response, @Request() req): Promise<ResponseMessageBody> {
     const access_token = await (await this.authService.generateToken(req.user)).access_token;
     await response.cookie('Authorization', access_token, {
       httpOnly: true,
+      expires: new Date(Date.now() + 5 * 60 * 1000)
     });
     return new ResponseMessage().success().body({
       token: access_token
@@ -50,7 +52,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('list')
-  public async getUsers(@Request() req): Promise<Response> {
+  public async getUsers(@Request() req): Promise<ResponseMessageBody> {
     const users = await this.userService.getUsers()
     return new ResponseMessage().success().body(users).build();
   }
