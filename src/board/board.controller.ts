@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Header, Logger, Param, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Logger, Param, Patch, Post, Put, Request, Response, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ReqeustCreateBoard } from './board.type';
+import { ReqeustCreateBoard, UpdateBoard } from './board.type';
 import { createBoardSchema } from './board.schema';
 import { ValidationError } from 'joi';
 import { ResponseMessage } from 'src/util/response.util';
@@ -63,9 +63,20 @@ export class BoardController {
     }
 
 
+    @UseGuards(AuthGuard('jwt'))
     @Header('Content-Type', 'application/json')
     @Patch('/:id')
-    public async updateBoards() {
-        return 'update-boards';
+    public async updateBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard) {
+        try {
+            const board = await this.boardService.updateBoard(id, req.user.username, body);
+
+            if (!board) {
+                return new ResponseMessage().error(403).build();
+            }
+            return new ResponseMessage().success(200).build()
+
+        } catch (err) {
+            Logger.error(err);
+        }
     }
 }

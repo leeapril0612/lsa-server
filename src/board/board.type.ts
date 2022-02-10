@@ -8,3 +8,8 @@ export type CreateBoard = {
     content: string;
     username: string;
 }
+
+export type UpdateBoard = {
+    title?: string;
+    content?: string;
+}

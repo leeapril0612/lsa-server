@@ -36,7 +36,7 @@ export class BoardService {
         return board;
     }
 
-    public async updateBoard(id: number, username: string) {
+    public async updateBoard(id: number, username: string, body: UpdateBoard) {
         const board = await this.boardRepository.findOne({
             where: {
                 id: id,
@@ -47,6 +47,13 @@ export class BoardService {
             return null;
         }
 
-        return board;
+        board.title = body.title || board.title;
+        board.content = body.content || board.content;
+        board.updatedDate = new Date();
+        const updatedBoard = await this.boardRepository.save(board);
+
+        return updatedBoard;
+    }
+
     }
 }
