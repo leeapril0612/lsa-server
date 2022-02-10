@@ -1,11 +1,11 @@
-import { Body, Injectable, Request } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Board } from 'src/entities/board.entity';
 import { BoardRepository } from './board.repository';
-import { CreateBoard } from './board.type';
-// import { CreateBoard } from './board.type';
+import { CreateBoard, UpdateBoard } from './board.type';
 
 @Injectable()
 export class BoardService {
+    
     constructor(private readonly boardRepository: BoardRepository) { }
 
     public async createBoard(boardData: CreateBoard): Promise<Board> {
@@ -16,7 +16,6 @@ export class BoardService {
         createBoard.username = boardData.username;
 
         const board = await this.boardRepository.save(createBoard);
-        console.log(`${createBoard},${board}`)
         return board;
     }
 
