@@ -40,13 +40,12 @@ export class BoardController {
         }
     }
 
-    // @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Header('Content-Type', 'application/json')
     @Post()
     public async createBoard(@Request() req, @Body() data: ReqeustCreateBoard) {
         try {
-
-            const { value, error }: { value: ReqeustCreateBoard; error?: ValidationError } = createBoardSchema.validate(data);
+            const { error }: { value: ReqeustCreateBoard; error?: ValidationError } = createBoardSchema.validate(data);
             if (error) {
                 Logger.error(error);
                 return new ResponseMessage().error(999).body('Parameter Error').build();
