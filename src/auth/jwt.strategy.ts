@@ -1,6 +1,7 @@
-import { Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { LoginUserInfo } from 'src/user/user.type';
 
 const fromAuthCookie = function () {
     return function (request) {
@@ -16,13 +17,14 @@ const fromAuthCookie = function () {
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
+            // jwtFromRequest: ExtractJwt.fromHeader('Authorization'),
             jwtFromRequest: fromAuthCookie(),
             ignoreExpiration: false,
             secretOrKey: 'lsa',
         });
     }
 
-    async validate(payload: any) {
-        return { userId: payload.sub, username: payload.username };
+    async validate(payload: LoginUserInfo) {
+        return { ...payload };
     }
 }
