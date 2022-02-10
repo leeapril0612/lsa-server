@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Logger, Param, Patch, Post, Put, Request, Response, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Logger, Param, Patch, Post,  Request, Response, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ReqeustCreateBoard, UpdateBoard } from './board.type';
 import { createBoardSchema } from './board.schema';
@@ -52,8 +52,7 @@ export class BoardController {
             }
             const board = await this.boardService.createBoard({
                 ...data,
-                // username: req.user.username,
-                username: 'admin'
+                username: req.user.username,
             });
             return new ResponseMessage().success(201).body(board).build();
         } catch (error) {
@@ -68,6 +67,24 @@ export class BoardController {
     public async updateBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard) {
         try {
             const board = await this.boardService.updateBoard(id, req.user.username, body);
+
+            if (!board) {
+                return new ResponseMessage().error(403).build();
+            }
+            return new ResponseMessage().success(200).build()
+
+        } catch (err) {
+            Logger.error(err);
+        }
+    }
+
+    
+    @UseGuards(AuthGuard('jwt'))
+    @Header('Content-Type', 'application/json')
+    @Delete('/:id')
+    public async deleteBoards(@Param('id') id: number, @Request() req, @Body() body: UpdateBoard) {
+        try {
+            const board = await this.boardService.deleteBoard(id, req.user.username);
 
             if (!board) {
                 return new ResponseMessage().error(403).build();

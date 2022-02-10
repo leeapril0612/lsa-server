@@ -55,5 +55,13 @@ export class BoardService {
         return updatedBoard;
     }
 
+    public async deleteBoard(id: number, username: string) {
+        const board = await this.boardRepository.findOne({
+            where: {
+                id: id,
+                username: username
+            }
+        });
+        return await this.boardRepository.remove(board);
     }
 }
