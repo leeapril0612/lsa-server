@@ -27,7 +27,7 @@ export class User {
 
   @Column('datetime', {
     name: 'last_login_date',
-    default: () => 'CURRENT_TIMESTAMP',
+    // default: () => 'CURRENT_TIMESTAMP',
   })
   lastLoginDate: Date;
 
@@ -36,10 +36,4 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdDate: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
 }

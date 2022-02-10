@@ -29,8 +29,7 @@ export class Board {
   createdDate: Date;
 
   @UpdateDateColumn({
-    name: 'updated_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    name: 'updated_at'
   })
   updatedDate: Date;
 }
