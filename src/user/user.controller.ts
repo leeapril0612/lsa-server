@@ -39,7 +39,9 @@ export class UserController {
   @Post('login')
   public async login(@Res({ passthrough: true }) response, @Request() req): Promise<Response> {
     const access_token = await (await this.authService.generateToken(req.user)).access_token;
-    await response.cookie('Authorization', access_token);
+    await response.cookie('Authorization', access_token, {
+      httpOnly: true,
+    });
     return new ResponseMessage().success().body({
       token: access_token
     }).build();
