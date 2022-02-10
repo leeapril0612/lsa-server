@@ -2,8 +2,8 @@ export class ResponseMessage {
   private data: any | any[]; //  response data
   private code: number; //  response code
 
-  public success(): ResponseMessage {
-    this.code = 200;
+  public success(code?): ResponseMessage {
+    this.code = code || 200;
     return this;
   }
 
