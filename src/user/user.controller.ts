@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ValidationError } from 'Joi';
 import { AuthService } from 'src/auth/auth.service';
@@ -15,12 +15,12 @@ export class UserController {
     private readonly authService: AuthService,
   ) { }
 
+  @Header('Content-Type', 'application/json')
   @UseGuards(AuthGuard('jwt'))
   @Post('register')
   public async addUser(@Body() register: Register): Promise<Response> {
     try {
-      const { value, error }: { value: Register; error?: ValidationError } =
-        registerSchema.validate(register);
+      const { value, error }: { value: Register; error?: ValidationError } = registerSchema.validate(register);
 
       if (error) {
         Logger.error(error);
