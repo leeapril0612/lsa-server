@@ -28,6 +28,7 @@ export class User {
   @Column('datetime', {
     name: 'last_login_date',
     // default: () => 'CURRENT_TIMESTAMP',
+    nullable: true
   })
   lastLoginDate: Date;
 
