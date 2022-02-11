@@ -1,7 +1,8 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { LoginUserInfo } from 'src/user/user.type';
+import { JwtPayload, LoginUserInfo } from 'src/user/user.type';
+import { AuthService } from './auth.service';
 
 const fromAuthCookie = function () {
     return function (request) {
@@ -24,7 +25,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: LoginUserInfo) {
-        return { ...payload };
+    async validate(payload: JwtPayload) {
+        const user = this.authService.isUser(payload.username);
+        if(!user){
+            return null;
+        }
+        return { ...payload }
     }
 }

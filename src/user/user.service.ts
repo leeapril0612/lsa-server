@@ -17,6 +17,15 @@ export class UserService {
     })
   }
 
+  public async getUser(username: string) {
+    const users = await this.userRepository.findOne({
+      select: ['username', 'name', 'lastLoginDate', 'createdDate', 'lastLoginDate'],
+      where: {
+        username:username
+      }
+    });
+    return users;
+  }
 
   public async getUsers() {
     const users = await this.userRepository.find({
