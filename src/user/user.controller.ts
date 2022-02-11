@@ -30,12 +30,13 @@ export class UserController {
 
       const user: UserInfo = await this.userService.addUser(value);
 
-      return new ResponseMessage().success().body(user).build();
+      return new ResponseMessage().success(201).body(user).build();
     } catch (err) {
       Logger.error(err);
     }
   }
 
+  @Header('Content-Type', 'application/json')
   @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Res({ passthrough: true }) response: Response, @Request() req): Promise<ResponseMessageBody> {
