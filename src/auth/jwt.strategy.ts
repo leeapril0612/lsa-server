@@ -15,7 +15,7 @@ const fromAuthCookie = function () {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+    constructor(private readonly authService: AuthService) {
         super({
             // jwtFromRequest: ExtractJwt.fromHeader('Authorization'),
             jwtFromRequest: fromAuthCookie(),
