@@ -17,7 +17,9 @@ export type UserInfo = {
 export type JwtPayload = {
   username: string;
   name: string;
-  lastLoginDate: string;
+  lastLogin: string;
+  iat: number;
+  exp: number;
 };
 
 export type LoginUserInfo = {
