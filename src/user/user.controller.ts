@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Header, Logger, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
-import { ValidationError } from 'Joi';
+import { ValidationError } from 'joi';
 import { AuthService } from 'src/auth/auth.service';
 
 import { ResponseMessage, ResponseMessageBody } from '../util/response.util';
