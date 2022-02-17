@@ -43,7 +43,9 @@ export class UserController {
     const access_token = await (await this.authService.generateToken(req.user)).access_token;
     await response.cookie('Authorization', access_token, {
       httpOnly: true,
-      expires: new Date(Date.now() + 5 * 60 * 1000)
+      expires: new Date(Date.now() + 5 * 60 * 1000),
+      sameSite: 'none', 
+      secure: true
     });
     return new ResponseMessage().success().body({
       token: access_token
