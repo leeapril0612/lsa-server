@@ -16,6 +16,13 @@ export class UserController {
     private readonly authService: AuthService,
   ) { }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('profile')
+  public async getProfile(@Request() req): Promise<ResponseMessageBody> {
+    const profile = await this.userService.getUser(req.user.username)
+    return new ResponseMessage().success().body(profile).build();
+  }
+
   @Header('Content-Type', 'application/json')
   @UseGuards(AuthGuard('jwt'))
   @Post('register')
@@ -52,10 +59,16 @@ export class UserController {
     }).build();
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('logout')
+  public async logout(@Res({ passthrough: true }) response: Response, @Request() req): Promise<ResponseMessageBody> {
+    response.clearCookie('Authorization')
+    return new ResponseMessage().success().body().build();
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('list')
-  public async getUsers(@Request() req): Promise<ResponseMessageBody> {
+  public async getUsers(): Promise<ResponseMessageBody> {
     const users = await this.userService.getUsers()
     return new ResponseMessage().success().body(users).build();
   }
