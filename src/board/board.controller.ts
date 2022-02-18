@@ -11,7 +11,7 @@ export class BoardController {
 
     constructor(private readonly boardService: BoardService) { }
 
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Get('/list')
     public async getBoards(): Promise<ResponseMessageBody> {
         try {
@@ -24,7 +24,7 @@ export class BoardController {
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Get('/:id')
     public async getBoard(@Param('id') id: number): Promise<ResponseMessageBody> {
         try {
