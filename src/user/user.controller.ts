@@ -59,7 +59,7 @@ export class UserController {
     }).build();
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Get('logout')
   public async logout(@Res({ passthrough: true }) response: Response, @Request() req): Promise<ResponseMessageBody> {
     response.clearCookie('Authorization')
